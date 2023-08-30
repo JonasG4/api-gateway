@@ -14,7 +14,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { CandidatoPoliticoDTO } from './DTO/candidato-politico.dto';
 import { fileValidators } from 'src/common/validators/file.validators';
@@ -22,6 +22,7 @@ import { ICandidatoPolitico } from 'src/common/interfaces/candidato-politico';
 import { Observable, lastValueFrom } from 'rxjs';
 import { CandidatosPoliticosMSG } from 'src/common/constantes';
 
+@ApiTags('Candidato Politico')
 @Controller('api/v1/candidato-politico')
 export class CandidatoPoliticoController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
