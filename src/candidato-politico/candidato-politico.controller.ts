@@ -172,7 +172,10 @@ export class CandidatoPoliticoController {
 
     return this._clientProxyCandidatoPolitico.send(
       CandidatosPoliticosMSG.CHANGE_PHOTO,
-      nuevaFoto,
+      {
+        id: parseInt(id),
+        nuevaFoto,
+      },
     );
   }
 }
