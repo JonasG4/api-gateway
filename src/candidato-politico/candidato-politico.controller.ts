@@ -48,7 +48,7 @@ export class CandidatoPoliticoController {
     )
     foto_candidato: Express.Multer.File,
     @Res() res: Response,
-  ): Observable<ICandidatoPolitico> | void {
+  ): void {
     this._clientProxyCandidatoPolitico
       .send(CandidatosPoliticosMSG.CREATE, {
         candidatoPolitico: candidatoPoliticoDTO,
