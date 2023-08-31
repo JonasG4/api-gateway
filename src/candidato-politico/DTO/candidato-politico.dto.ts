@@ -38,3 +38,23 @@ export class CandidatoPoliticoDTO {
   @IsNumber()
   id_persona_natural: number;
 }
+
+export class CandidatoPoliticoUpdateDTO {
+  @ApiProperty({
+    enum: Estado,
+    required: false,
+  })
+  @IsEnum(Estado)
+  @IsOptional()
+  estado?: Estado;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  id_partido_politico?: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  id_persona_natural?: number;
+}

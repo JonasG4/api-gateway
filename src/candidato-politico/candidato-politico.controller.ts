@@ -16,7 +16,10 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
-import { CandidatoPoliticoDTO } from './DTO/candidato-politico.dto';
+import {
+  CandidatoPoliticoDTO,
+  CandidatoPoliticoUpdateDTO,
+} from './DTO/candidato-politico.dto';
 import { fileValidators } from 'src/common/validators/file.validators';
 import { ICandidatoPolitico } from 'src/common/interfaces/candidato-politico';
 import { Observable, lastValueFrom } from 'rxjs';
@@ -81,7 +84,7 @@ export class CandidatoPoliticoController {
 
   @Put(':id')
   async update(
-    @Body() candidatoPoliticoDTO: CandidatoPoliticoDTO,
+    @Body() candidatoPoliticoDTO: CandidatoPoliticoUpdateDTO,
     @Param('id') id: string,
   ): Promise<Observable<ICandidatoPolitico>> {
     const candidatoPolitico = await lastValueFrom(
