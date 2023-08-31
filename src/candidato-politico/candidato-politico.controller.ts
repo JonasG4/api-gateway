@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Delete,
   Put,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -24,6 +25,7 @@ import { fileValidators } from 'src/common/validators/file.validators';
 import { ICandidatoPolitico } from 'src/common/interfaces/candidato-politico';
 import { Observable, lastValueFrom } from 'rxjs';
 import { CandidatosPoliticosMSG } from 'src/common/constantes';
+import { Response } from 'express';
 
 @ApiTags('Candidato Politico')
 @Controller('api/v1/candidato-politico')
@@ -45,14 +47,20 @@ export class CandidatoPoliticoController {
       }),
     )
     foto_candidato: Express.Multer.File,
-  ): Observable<ICandidatoPolitico> {
-    return this._clientProxyCandidatoPolitico.send(
-      CandidatosPoliticosMSG.CREATE,
-      {
+    @Res() res: Response,
+  ): Observable<ICandidatoPolitico> | void {
+    this._clientProxyCandidatoPolitico
+      .send(CandidatosPoliticosMSG.CREATE, {
         candidatoPolitico: candidatoPoliticoDTO,
         foto_candidato,
-      },
-    );
+      })
+      .subscribe((response: ICandidatoPolitico | Record<string, any>) => {
+        if ('statusCode' in response) {
+          return res.status(response.statusCode).json(response);
+        } else {
+          return response;
+        }
+      });
   }
 
   @Get()
