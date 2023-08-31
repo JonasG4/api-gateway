@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 enum Estado {
   ACTIVO = 'ACTIVO',
@@ -16,8 +11,6 @@ export class CandidatoPoliticoDTO {
   @ApiProperty({
     type: 'file',
   })
-  @IsNotEmpty()
-  @IsString()
   foto_candidato: string;
 
   @ApiProperty({
@@ -30,12 +23,12 @@ export class CandidatoPoliticoDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
+  @Transform(({ value }) => parseInt(value))
   id_partido_politico: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
+  @Transform(({ value }) => parseInt(value))
   id_persona_natural: number;
 }
 
@@ -49,12 +42,12 @@ export class CandidatoPoliticoUpdateDTO {
   estado?: Estado;
 
   @ApiProperty()
-  @IsNumber()
   @IsOptional()
+  @Transform(({ value }) => parseInt(value))
   id_partido_politico?: number;
 
   @ApiProperty()
-  @IsNumber()
   @IsOptional()
+  @Transform(({ value }) => parseInt(value))
   id_persona_natural?: number;
 }
