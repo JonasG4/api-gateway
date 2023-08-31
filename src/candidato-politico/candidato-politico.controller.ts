@@ -58,7 +58,7 @@ export class CandidatoPoliticoController {
         if ('statusCode' in response) {
           return res.status(response.statusCode).json(response);
         } else {
-          return response;
+          return res.status(HttpStatus.CREATED).json(response);
         }
       });
   }
