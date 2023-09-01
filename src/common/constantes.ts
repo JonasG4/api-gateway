@@ -20,7 +20,6 @@ export enum CentrosVotacionMSG {
   FIND_ALL = 'FIND_CENTROS_VOTACION',
   FIND_ONE = 'FIND_CENTRO_VOTACION',
   SET_STATUS = 'SET_STATUS',
-  SET_JRV = 'SET_JRV',
 }
 
 export enum JrvMSG {

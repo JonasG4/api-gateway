@@ -129,33 +129,4 @@ export class CentroVotacionController {
       {id: parseInt(id), estado}
     );
   }
-
-  @Post(':id/jrv/setJrv/:idJrv')
-  async setJrv(
-    @Param('id') id: string,
-    @Param('idJrv') idJrv: string,
-  ): Promise<Observable<any>> {
-    const centroVotacion = await lastValueFrom(
-      this._clientProxyCentroVotacion.send(
-        CentrosVotacionMSG.FIND_ONE,
-        parseInt(id),
-      ),
-    );
-    if (!centroVotacion)
-      throw new HttpException(
-        'Centro de votación no encontrado',
-        HttpStatus.NOT_FOUND,
-      );
-
-    const jrv = await lastValueFrom(
-      this._clientProxyJrv.send(JrvMSG.FIND_ONE, parseInt(idJrv)),
-    );
-    if (!jrv)
-      throw new HttpException('JRV no encontrada', HttpStatus.NOT_FOUND);
-
-    return this._clientProxyCentroVotacion.send(CentrosVotacionMSG.SET_JRV, {
-      id: parseInt(id),
-      idJrv: parseInt(idJrv),
-    });
-  }
 }
