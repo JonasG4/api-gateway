@@ -11,12 +11,22 @@ import { RabbitMQ } from '../constantes';
 export class ClientProxyAppAdminitracion {
   constructor(private readonly config: ConfigService) {}
 
-  clientProxyPartidosPoliticos(): ClientProxy {
+  clientProxyJuntaReceptoraVotos(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.PartidosPoliticosQueue,
+        queue: RabbitMQ.JuntaReceptoraVotosQueue,
+      },
+    });
+  }
+
+  clientProxyJrvMiembros(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.JrvMiembrosQueue,
       },
     });
   }

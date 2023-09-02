@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
-import { PartidoPoliticoModule } from './partido-politico/partido-politico.module';
 import { ConfigModule } from '@nestjs/config';
+import { JuntaReceptoraVotosModule } from './junta-receptora-votos/junta-receptora-votos.module';
+import { JrvMiembrosModule } from './jrv-miembros/jrv-miembros.module';
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.dev'],
+      envFilePath: ['.env.prod'],
       isGlobal: true,
     }),
-    PartidoPoliticoModule,
+    JuntaReceptoraVotosModule,
+    JrvMiembrosModule,
   ],
 })
 export class AppModule {}
