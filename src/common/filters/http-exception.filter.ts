@@ -16,7 +16,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
-    console.log('exception: ', response.statusCode);
+    
 
     const status =
       exception instanceof HttpException
@@ -25,7 +25,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     const message =
       exception instanceof HttpException ? exception.getResponse() : exception;
-
+      console.log('exception: ', message);
     this.logger.error(
       `Http Status: ${status} Error: ${JSON.stringify(message)}`,
     );
