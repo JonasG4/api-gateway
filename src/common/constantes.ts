@@ -1,6 +1,7 @@
 export enum RabbitMQ {
 
   PartidosPoliticosQueue = 'partidos_politicos',
+  CandidatosPoliticosQueue = 'candidatos_politicos',
   CentrosVotacionQueue = 'centro_votacion',
   JuntaReceptoraVotosQueue = 'junta_receptora_votos',
 }
@@ -14,6 +15,15 @@ export enum JuntaReceptoraVotosMSG {
   GET_MEMBERS_BY_JRV = 'GET_MEMBERS_BY_JRV',
   GET_MEMBER_BY_ID = 'GET_MEMBER_BY_ID',  
   CREATE_MEMBER = 'CREATE_MEMBER',  
+}
+
+export enum CandidatosPoliticosMSG {
+  CREATE = 'CREATE_CANDIDATO_POLITICO',
+  UPDATE = 'UPDATE_CANDIDATO_POLITICO',
+  DELETE = 'DELETE_CANDIDATO_POLITICO',
+  FIND_ALL = 'FIND_CANDIDATOS_POLITICOS',
+  FIND_ONE = 'FIND__CANDIDATO_POLITICO',
+  CHANGE_PHOTO = 'CHANGE_PHOTO_CANDIDATO_POLITICO',
 }
 
 export enum CentrosVotacionMSG {

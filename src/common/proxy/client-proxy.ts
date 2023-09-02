@@ -21,12 +21,22 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
-  clientProxyCentrosVotacion(): ClientProxy {
+   clientProxyCentrosVotacion(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.CentrosVotacionQueue,
+      queue: RabbitMQ.CentrosVotacionQueue,
+      },
+    });
+  }
+
+  clientProxyCandidatosPoliticos(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.CandidatosPoliticosQueue
       },
     });
   }
