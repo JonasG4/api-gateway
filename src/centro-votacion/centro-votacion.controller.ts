@@ -13,7 +13,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { CentroVotacionDTO, EstadoDTO } from './DTO/centro-votacion.dto';
-import { CentrosVotacionMSG, JrvMSG } from 'src/common/constantes';
+import { CentrosVotacionMSG } from 'src/common/constantes';
 import { ICentroVotacion } from 'src/common/interfaces/centro-votacion';
 import { Observable, lastValueFrom } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class CentroVotacionController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
   private _clientProxyCentroVotacion =
     this.clientProxy.clientProxyCentrosVotacion();
-  private _clientProxyJrv = this.clientProxy.clientProxyJrv();
+  private _clientProxyJrv = this.clientProxy.clientProxyJuntaReceptoraVotos();
 
   @Post()
   create(
