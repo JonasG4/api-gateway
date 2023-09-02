@@ -102,7 +102,7 @@ export class JuntaReceptoraVotosController {
         HttpStatus.NOT_FOUND,
       );
     }
-
+    
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.UPDATE,
       {

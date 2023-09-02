@@ -1,5 +1,5 @@
 export interface IJuntaReceptoraVotos extends Document {
-  id_centro_votacion: string;
+  id_centro_votacion: number;
   codigo: string;
   estado?: Estado;
 }
