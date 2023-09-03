@@ -31,12 +31,22 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
-   clientProxyCentrosVotacion(): ClientProxy {
+  clientProxyCentrosVotacion(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-      queue: RabbitMQ.CentrosVotacionQueue,
+        queue: RabbitMQ.CentrosVotacionQueue,
+      },
+    });
+  }
+
+  clientProxyPersonaNatural(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+      queue: RabbitMQ.PersonaNaturalQueue,
       },
     });
   }
@@ -46,9 +56,18 @@ export class ClientProxyAppAdminitracion {
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.CandidatosPoliticosQueue
+        queue: RabbitMQ.CandidatosPoliticosQueue,
       },
     });
   }
 
+  clientProxyDestinoSufragio(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.DestinoSufragioQueue,
+      },
+    });
+  }
 }

@@ -3,6 +3,8 @@ export enum RabbitMQ {
   CandidatosPoliticosQueue = 'candidatos_politicos',
   CentrosVotacionQueue = 'centro_votacion',
   JuntaReceptoraVotosQueue = 'junta_receptora_votos',
+  PersonaNaturalQueue = 'persona_natural',
+  DestinoSufragioQueue = 'destino-sufragio'
 }
 
 export enum PartidosPoliticosMSG {
@@ -23,6 +25,8 @@ export enum JuntaReceptoraVotosMSG {
   GET_MEMBERS_BY_JRV = 'GET_MEMBERS_BY_JRV',
   GET_MEMBER_BY_ID = 'GET_MEMBER_BY_ID',  
   CREATE_MEMBER = 'CREATE_MEMBER',  
+  UPDATE_MEMBER = 'UPDATE_MEMBER',
+  DELETE_MEMBER = 'DELETE_MEMBER'
 }
 
 export enum CandidatosPoliticosMSG {
@@ -51,3 +55,20 @@ export enum JrvMiembrosMSG {
   FIND_ONE = 'FIND_JUNTA_RECEPTORA_VOTOS',
 }
 
+
+export enum PersonaNaturalMSG {
+  CREATE = 'CREATE_PERSONA_NATURAL',
+  FIND_ALL = 'FIND_PERSONA_NATURALES',
+  FIND_ONE = 'FIND__PERSONA_NATURAL',
+ 
+}
+
+export enum DestinoSufragioMSG {
+  CREATE = 'CREATE_DESTINO_SUFRAGIO',
+  UPDATE = 'UPDATE_DESTINO_SUFRAGIO',
+  DELETE = 'DELETE_DESTINO_SUFRAGIO',
+  FIND_ALL = 'FIND_DESTINOS_SUFRAGIO',
+  FIND_ONE = 'FIND_DESTINO_SUFRAGIO',
+  SET_STATUS_VOTE = 'SET_STATUS_VOTE',
+  FIND_BY_DUI = 'FIND_BY_DUI'
+}
