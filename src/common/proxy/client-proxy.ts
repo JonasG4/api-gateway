@@ -31,12 +31,12 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
-   clientProxyCentrosVotacion(): ClientProxy {
+  clientProxyCentrosVotacion(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-      queue: RabbitMQ.CentrosVotacionQueue,
+        queue: RabbitMQ.CentrosVotacionQueue,
       },
     });
   }
@@ -46,9 +46,18 @@ export class ClientProxyAppAdminitracion {
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.CandidatosPoliticosQueue
+        queue: RabbitMQ.CandidatosPoliticosQueue,
       },
     });
   }
 
+  clientProxyUsuarios(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.UsuarioQueue,
+      },
+    });
+  }
 }

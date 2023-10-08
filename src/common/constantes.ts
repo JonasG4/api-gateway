@@ -3,6 +3,7 @@ export enum RabbitMQ {
   CandidatosPoliticosQueue = 'candidatos_politicos',
   CentrosVotacionQueue = 'centro_votacion',
   JuntaReceptoraVotosQueue = 'junta_receptora_votos',
+  UsuarioQueue = 'usuarios',
 }
 
 export enum PartidosPoliticosMSG {
@@ -21,8 +22,8 @@ export enum JuntaReceptoraVotosMSG {
   FIND_ALL = 'FIND_JUNTAS_RECEPTORA_VOTOS',
   FIND_ONE = 'FIND_JUNTA_RECEPTORA_VOTOS',
   GET_MEMBERS_BY_JRV = 'GET_MEMBERS_BY_JRV',
-  GET_MEMBER_BY_ID = 'GET_MEMBER_BY_ID',  
-  CREATE_MEMBER = 'CREATE_MEMBER',  
+  GET_MEMBER_BY_ID = 'GET_MEMBER_BY_ID',
+  CREATE_MEMBER = 'CREATE_MEMBER',
 }
 
 export enum CandidatosPoliticosMSG {
@@ -51,3 +52,16 @@ export enum JrvMiembrosMSG {
   FIND_ONE = 'FIND_JUNTA_RECEPTORA_VOTOS',
 }
 
+export enum UsuariosMSG {
+  CREATE = 'CREATE_USUARIO',
+  UPDATE = 'UPDATE_USUARIO',
+  DELETE = 'DELETE_USUARIO',
+  FIND_ALL = 'FIND_USUARIOS',
+  FIND_ONE = 'FIND_USUARIO',
+  CHANGE_PASSWORD = 'CHANGE_PASSWORD',
+  VALIDATE_USER = 'VALIDATE_USER',
+  FIND_BY_EMAIL = 'FIND_BY_EMAIL',
+  FIND_BY_USERNAME = 'FIND_BY_USERNAME',
+}
+
+export const ROLES_KEY = 'roles';

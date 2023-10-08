@@ -4,7 +4,8 @@ import { CandidatoPoliticoModule } from './candidato-politico/candidato-politico
 import { CentroVotacionModule } from './centro-votacion/centro-votacion.module';
 import { JuntaReceptoraVotosModule } from './junta-receptora-votos/junta-receptora-votos.module';
 import { PartidoPoliticoModule } from './partido-politico/partido-politico.module';
-
+import { AuthModule } from './auth/auth.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -15,7 +16,9 @@ import { PartidoPoliticoModule } from './partido-politico/partido-politico.modul
     CandidatoPoliticoModule,
     CentroVotacionModule,
     JuntaReceptoraVotosModule,
-    PartidoPoliticoModule
+    PartidoPoliticoModule,
+    AuthModule,
+    UsuariosModule,
   ],
 })
 export class AppModule {}
