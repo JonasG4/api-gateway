@@ -41,6 +41,16 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
+  clientProxyPersonaNatural(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.PersonaNaturalQueue,
+      },
+    });
+  }
+
   clientProxyCandidatosPoliticos(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
@@ -57,6 +67,15 @@ export class ClientProxyAppAdminitracion {
       options: {
         urls: this.config.get('AMQP_URL'),
         queue: RabbitMQ.UsuarioQueue,
+      },
+    });
+  }
+  clientProxyDestinoSufragio(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.DestinoSufragioQueue,
       },
     });
   }

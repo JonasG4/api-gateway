@@ -6,6 +6,8 @@ import { JuntaReceptoraVotosModule } from './junta-receptora-votos/junta-recepto
 import { PartidoPoliticoModule } from './partido-politico/partido-politico.module';
 import { AuthModule } from './auth/auth.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { PersonaNaturalModule } from './persona-natural/persona-natural.module';
+import { DestinoSufragioModule } from './destino-sufragio/destino-sufragio.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     PartidoPoliticoModule,
     AuthModule,
     UsuariosModule,
+    PersonaNaturalModule,
+    DestinoSufragioModule,
   ],
 })
 export class AppModule {}

@@ -4,7 +4,11 @@ export enum RabbitMQ {
   CentrosVotacionQueue = 'centro_votacion',
   JuntaReceptoraVotosQueue = 'junta_receptora_votos',
   UsuarioQueue = 'usuarios',
+  PersonaNaturalQueue = 'persona_natural',
+  DestinoSufragioQueue = 'destino-sufragio',
 }
+
+export const ROLES_KEY = 'roles';
 
 export enum PartidosPoliticosMSG {
   CREATE = 'CREATE_PARTIDO_POLITICO',
@@ -24,6 +28,8 @@ export enum JuntaReceptoraVotosMSG {
   GET_MEMBERS_BY_JRV = 'GET_MEMBERS_BY_JRV',
   GET_MEMBER_BY_ID = 'GET_MEMBER_BY_ID',
   CREATE_MEMBER = 'CREATE_MEMBER',
+  UPDATE_MEMBER = 'UPDATE_MEMBER',
+  DELETE_MEMBER = 'DELETE_MEMBER',
 }
 
 export enum CandidatosPoliticosMSG {
@@ -64,4 +70,18 @@ export enum UsuariosMSG {
   FIND_BY_USERNAME = 'FIND_BY_USERNAME',
 }
 
-export const ROLES_KEY = 'roles';
+export enum PersonaNaturalMSG {
+  CREATE = 'CREATE_PERSONA_NATURAL',
+  FIND_ALL = 'FIND_PERSONA_NATURALES',
+  FIND_ONE = 'FIND__PERSONA_NATURAL',
+}
+
+export enum DestinoSufragioMSG {
+  CREATE = 'CREATE_DESTINO_SUFRAGIO',
+  UPDATE = 'UPDATE_DESTINO_SUFRAGIO',
+  DELETE = 'DELETE_DESTINO_SUFRAGIO',
+  FIND_ALL = 'FIND_DESTINOS_SUFRAGIO',
+  FIND_ONE = 'FIND_DESTINO_SUFRAGIO',
+  SET_STATUS_VOTE = 'SET_STATUS_VOTE',
+  FIND_BY_DUI = 'FIND_BY_DUI',
+}
