@@ -45,8 +45,8 @@ export class CentroVotacionController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Observable<ICentroVotacion>> {
-    console.log(id);
-    console.log(parseInt(id));
+    (id);
+    (parseInt(id));
 
     const centroVotacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
@@ -109,9 +109,8 @@ export class CentroVotacionController {
   @Patch(':id/cambiar-estado')
   async changeStatus(
     @Param('id') id: string,
-    @Body('estado') estado: EstadoDTO
+    @Body('estado') estado: EstadoDTO,
   ): Promise<Observable<ICentroVotacion>> {
-    
     const centroVotacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
         CentrosVotacionMSG.FIND_ONE,
@@ -124,9 +123,9 @@ export class CentroVotacionController {
         HttpStatus.NOT_FOUND,
       );
 
-    return this._clientProxyCentroVotacion.send(
-      CentrosVotacionMSG.SET_STATUS,
-      {id: parseInt(id), estado}
-    );
+    return this._clientProxyCentroVotacion.send(CentrosVotacionMSG.SET_STATUS, {
+      id: parseInt(id),
+      estado,
+    });
   }
 }

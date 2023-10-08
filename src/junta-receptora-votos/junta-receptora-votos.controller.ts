@@ -18,6 +18,8 @@ import {
   JuntaReceptoraVotosMSG,
 } from 'src/common/constantes';
 import { IJuntaReceptoraVotos } from 'src/common/interfaces/junta-receptora-votos';
+import { IJrvMiembro } from 'src/common/interfaces/miembro-jrv';
+import { JrvMiembroDTO } from './DTO/miembro-jrv.dto';
 
 @ApiTags('Junta Receptora Votos')
 @Controller('api/v1/junta-receptora-votos')
@@ -31,7 +33,7 @@ export class JuntaReceptoraVotosController {
   @Post()
   async create(
     @Body() juntaReceptoraVotosDTO: JuntaReceptoraVotosDTO,
-  ): Promise< Observable<IJuntaReceptoraVotos>> {
+  ): Promise<Observable<IJuntaReceptoraVotos>> {
     const { id_centro_votacion } = juntaReceptoraVotosDTO;
     const centro_votacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
@@ -136,33 +138,115 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Get(':idJRV/miembros')
-  getMembersByJRVId(@Param('id_jrv') id_jrv: string): Observable<any> {
+  @Get(':id_jrv/miembros')
+  async getMembersByJRVId(
+    @Param('id_jrv') id_jrv: string,
+  ): Promise<Observable<IJrvMiembro>> {
+    const juntaReceptoraVotos = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.FIND_ONE,
+        parseInt(id_jrv),
+      ),
+    );
+    // Si no existe la junta receptora de votos, no se puede eliminar
+    if (!juntaReceptoraVotos) {
+      throw new HttpException(
+        'Junta Receptora de Votos no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.GET_MEMBERS_BY_JRV,
-      id_jrv,
+      parseInt(id_jrv),
     );
   }
 
-  @Get(':idJRV/miembros/:idMiembros')
-  getMemberById(
+  @Get(':id_jrv/miembros/:idMiembros')
+  async getMemberById(
     @Param('id_jrv') id_jrv: string,
     @Param('id_miembro') id_jrv_miembro: string,
-  ): Observable<any> {
+  ): Promise<Observable<IJrvMiembro>> {
+    const juntaReceptoraVotos = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.FIND_ONE,
+        parseInt(id_jrv),
+      ),
+    );
+
+    // Si no existe la junta receptora de votos, no se puede eliminar
+    if (!juntaReceptoraVotos) {
+      throw new HttpException(
+        'Junta Receptora de Votos no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID,
-      { id_jrv, id_jrv_miembro },
+      { id_jrv: parseInt(id_jrv), id_jrv_miembro: parseInt(id_jrv_miembro) },
     );
   }
 
-  @Post(':idJRV/miembros')
-  createMember(
-    @Param('id_jrv') id_jrv: string,
-    @Body() miembroData: any,
-  ): Observable<any> {
+  @Post('miembro')
+  async createMember(
+    @Body() miembroData: JrvMiembroDTO,
+  ): Promise<Observable<IJrvMiembro>> {
+    const { id_jrv } = miembroData;
+    const juntaReceptoraVotos = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.FIND_ONE,
+        id_jrv,
+      ),
+    );
+
+    // Si no existe la junta receptora de votos, no se puede eliminar
+    if (!juntaReceptoraVotos) {
+      throw new HttpException(
+        'Junta Receptora de Votos no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.CREATE_MEMBER,
-      { id_jrv, miembroData },
+      miembroData,
+    );
+  }
+
+  @Put('miembro/:id_jrv_miembro')
+  async updateMember(
+    @Body() miembroData: JrvMiembroDTO,
+    @Param('id_jrv_miembro') id_jrv_miembro: string
+  ): Promise<Observable<IJrvMiembro>> {
+    const { id_jrv } = miembroData;
+    
+    const juntaReceptoraVotos = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.FIND_ONE,
+        id_jrv,
+      ),
+    );
+    if (!juntaReceptoraVotos) {
+      throw new HttpException(
+        'Junta Receptora de Votos no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this._clientProxyJuntaReceptoraVotos.send(
+      JuntaReceptoraVotosMSG.UPDATE_MEMBER,
+      { id_jrv_miembro: parseInt(id_jrv_miembro), miembroData },
+    );
+  }
+
+  @Delete('miembro/:id_jrv_miembro')
+  async deleteMember(
+    @Param('id_jrv_miembro') id_jrv_miembro: string
+  ): Promise<Observable<IJrvMiembro>> {
+    
+    return this._clientProxyJuntaReceptoraVotos.send(
+      JuntaReceptoraVotosMSG.DELETE_MEMBER,
+       parseInt(id_jrv_miembro) ,
     );
   }
 }

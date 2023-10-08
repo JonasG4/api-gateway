@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 enum Estado {
   ACTIVO = 'ACTIVO',
@@ -10,6 +10,8 @@ export class JuntaReceptoraVotosDTO {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @MaxLength(10)
+  @MinLength(5)
   codigo: string;
   @ApiProperty()
   @IsNotEmpty()
