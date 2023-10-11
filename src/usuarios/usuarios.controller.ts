@@ -62,7 +62,7 @@ export class UsuariosController {
     });
   }
 
-  // @Roles(Role.Root)
+  @Roles(Role.Root)
   @Put(':id')
   async update(@Param('id') id: string, @Body() usuarioDTO: UsuarioUpdateDTO) {
     const user = await lastValueFrom(
