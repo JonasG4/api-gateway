@@ -23,8 +23,12 @@ import {
 } from './DTO/candidato-politico.dto';
 import { fileValidators } from 'src/common/validators/file.validators';
 import { ICandidatoPolitico } from 'src/common/interfaces/candidato-politico';
-import { Observable, lastValueFrom } from 'rxjs';
-import { CandidatosPoliticosMSG } from 'src/common/constantes';
+import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
+import {
+  CandidatosPoliticosMSG,
+  PartidosPoliticosMSG,
+  PersonaNaturalMSG,
+} from 'src/common/constantes';
 import { Response } from 'express';
 
 @ApiTags('Candidato Politico')
@@ -35,10 +39,16 @@ export class CandidatoPoliticoController {
   private _clientProxyCandidatoPolitico =
     this.clientProxy.clientProxyCandidatosPoliticos();
 
+  private _clientProxyPartidoPolitico =
+    this.clientProxy.clientProxyPartidosPoliticos();
+
+  private _clientProxyPersonaNatural =
+    this.clientProxy.clientProxyPersonaNatural();
+
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('foto_candidato'))
-  create(
+  async create(
     @Body() candidatoPoliticoDTO: CandidatoPoliticoDTO,
     @UploadedFile(
       new ParseFilePipe({
@@ -48,7 +58,35 @@ export class CandidatoPoliticoController {
     )
     foto_candidato: Express.Multer.File,
     @Res() res: Response,
-  ): void {
+  ): Promise<void> {
+    const existPartidoPolitico = await firstValueFrom(
+      this._clientProxyPartidoPolitico.send(
+        PartidosPoliticosMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_partido_politico),
+      ),
+    );
+
+    const existPersonaNatural = await firstValueFrom(
+      this._clientProxyPersonaNatural.send(
+        PersonaNaturalMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_persona_natural),
+      ),
+    );
+
+    if (!existPartidoPolitico) {
+      throw new HttpException(
+        'Partido Politico no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!existPersonaNatural) {
+      throw new HttpException(
+        'Persona Natural no encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this._clientProxyCandidatoPolitico
       .send(CandidatosPoliticosMSG.CREATE, {
         candidatoPolitico: candidatoPoliticoDTO,
@@ -105,6 +143,34 @@ export class CandidatoPoliticoController {
     if (!candidatoPolitico) {
       throw new HttpException(
         'Candidato Politico no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const existPartidoPolitico = await firstValueFrom(
+      this._clientProxyPartidoPolitico.send(
+        PartidosPoliticosMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_partido_politico),
+      ),
+    );
+
+    const existPersonaNatural = await firstValueFrom(
+      this._clientProxyPersonaNatural.send(
+        PersonaNaturalMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_persona_natural),
+      ),
+    );
+
+    if (!existPartidoPolitico) {
+      throw new HttpException(
+        'Partido Politico no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!existPersonaNatural) {
+      throw new HttpException(
+        'Persona Natural no encontrada',
         HttpStatus.NOT_FOUND,
       );
     }

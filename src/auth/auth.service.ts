@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsuariosMSG } from 'src/common/constantes';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { lastValueFrom } from 'rxjs';
-import { UsuarioDTO } from 'src/usuarios/DTO/usuario.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,11 +39,5 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
-  }
-
-  async signUp(usuarioDTO: UsuarioDTO) {
-    return await lastValueFrom(
-      this._clientProxyUsuario.send(UsuariosMSG.CREATE, usuarioDTO),
-    );
   }
 }

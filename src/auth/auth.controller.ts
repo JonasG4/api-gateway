@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
@@ -13,6 +19,13 @@ export class AuthController {
       user.usuario,
       user.clave,
     );
+
+    if (!usuario)
+      throw new HttpException(
+        'El usuario o la contraseña son incorrectos',
+        HttpStatus.FORBIDDEN,
+      );
+
     return await this.authService.signIn(usuario);
   }
 }
