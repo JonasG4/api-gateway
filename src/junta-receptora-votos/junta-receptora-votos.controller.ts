@@ -30,28 +30,43 @@ export class JuntaReceptoraVotosController {
     this.clientProxy.clientProxyJuntaReceptoraVotos();
   private _clientProxyCentroVotacion =
     this.clientProxy.clientProxyCentrosVotacion();
-    private _clientProxyPersonaNatural =
+  private _clientProxyPersonaNatural =
     this.clientProxy.clientProxyPersonaNatural();
 
   @Post()
   async create(
     @Body() juntaReceptoraVotosDTO: JuntaReceptoraVotosDTO,
   ): Promise<Observable<IJuntaReceptoraVotos>> {
-    const { id_centro_votacion } = juntaReceptoraVotosDTO;
-    const centro_votacion = await lastValueFrom(
+    const existeCentroVotacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
         CentrosVotacionMSG.FIND_ONE,
-        id_centro_votacion,
+        juntaReceptoraVotosDTO.id_centro_votacion,
       ),
     );
 
-    // Si no existe la junta receptora de votos, no se puede eliminar
-    if (!centro_votacion) {
+    // Si no existe la junta receptora de votos, no se puede crear jrv
+    if (!existeCentroVotacion) {
       throw new HttpException(
         'Centro de votación no encontrado',
         HttpStatus.NOT_FOUND,
       );
     }
+
+    const existeCodigo = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.FIND_ONE_BY_CODE,
+        juntaReceptoraVotosDTO.codigo,
+      ),
+    );
+
+    // Si no existe la junta receptora de votos, no se puede crear jrv
+    if (existeCodigo) {
+      throw new HttpException(
+        'JRV ya existe con ese codigo',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.CREATE,
       juntaReceptoraVotosDTO,
@@ -93,6 +108,21 @@ export class JuntaReceptoraVotosController {
     @Body() juntaReceptoraVotosDTO: JuntaReceptoraVotosDTO,
     @Param('id') id: string,
   ): Promise<Observable<IJuntaReceptoraVotos>> {
+    const existeCentroVotacion = await lastValueFrom(
+      this._clientProxyCentroVotacion.send(
+        CentrosVotacionMSG.FIND_ONE,
+        juntaReceptoraVotosDTO.id_centro_votacion,
+      ),
+    );
+
+    // Si no existe la junta receptora de votos, no se puede crear jrv
+    if (!existeCentroVotacion) {
+      throw new HttpException(
+        'Centro de votación no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
@@ -218,7 +248,7 @@ export class JuntaReceptoraVotosController {
       ),
     );
 
-    if(countMembersJRV.length >= 6){
+    if (countMembersJRV.length >= 6) {
       throw new HttpException(
         'Junta Receptora de Votos llena',
         HttpStatus.NOT_FOUND,
@@ -228,11 +258,11 @@ export class JuntaReceptoraVotosController {
     const memberExist = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.GET_MEMBERS_BY_ID_PERSONA_NATURAL,
-        {id_jrv, id_persona_natural}
+        { id_jrv, id_persona_natural },
       ),
     );
 
-    if(memberExist != undefined){
+    if (memberExist != undefined) {
       throw new HttpException(
         'Junta Receptora de Votos ya posee ese usuario',
         HttpStatus.NOT_FOUND,
@@ -242,11 +272,11 @@ export class JuntaReceptoraVotosController {
     const naturalPersonExist = await lastValueFrom(
       this._clientProxyPersonaNatural.send(
         PersonaNaturalMSG.FIND_ONE,
-        id_persona_natural
+        id_persona_natural,
       ),
     );
 
-    if(!naturalPersonExist){
+    if (!naturalPersonExist) {
       throw new HttpException(
         'Persona natural no existe',
         HttpStatus.NOT_FOUND,
