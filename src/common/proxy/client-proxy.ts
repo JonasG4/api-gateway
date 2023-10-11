@@ -46,7 +46,7 @@ export class ClientProxyAppAdminitracion {
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-      queue: RabbitMQ.PersonaNaturalQueue,
+        queue: RabbitMQ.PersonaNaturalQueue,
       },
     });
   }
@@ -61,6 +61,15 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
+  clientProxyUsuarios(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.UsuarioQueue,
+      },
+    });
+  }
   clientProxyDestinoSufragio(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
