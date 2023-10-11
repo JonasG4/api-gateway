@@ -17,6 +17,7 @@ import {
   CentrosVotacionMSG,
   JuntaReceptoraVotosMSG,
   PersonaNaturalMSG,
+  UsuariosMSG,
 } from 'src/common/constantes';
 import { IJuntaReceptoraVotos } from 'src/common/interfaces/junta-receptora-votos';
 import { IJrvMiembro } from 'src/common/interfaces/miembro-jrv';
@@ -30,8 +31,7 @@ export class JuntaReceptoraVotosController {
     this.clientProxy.clientProxyJuntaReceptoraVotos();
   private _clientProxyCentroVotacion =
     this.clientProxy.clientProxyCentrosVotacion();
-  private _clientProxyPersonaNatural =
-    this.clientProxy.clientProxyPersonaNatural();
+  private _clientProxyUsuario = this.clientProxy.clientProxyUsuarios();
 
   @Post()
   async create(
@@ -195,10 +195,10 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Get(':id_jrv/miembros/:idMiembros')
+  @Get(':id_jrv/miembros/:id_jrv_miembro')
   async getMemberById(
     @Param('id_jrv') id_jrv: string,
-    @Param('id_miembro') id_jrv_miembro: string,
+    @Param('id_jrv_miembro') id_jrv_miembro: string,
   ): Promise<Observable<IJrvMiembro>> {
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
@@ -225,15 +225,14 @@ export class JuntaReceptoraVotosController {
   async createMember(
     @Body() miembroData: JrvMiembroDTO,
   ): Promise<Observable<IJrvMiembro>> {
-    const { id_jrv, id_persona_natural } = miembroData;
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
-        id_jrv,
+        miembroData.id_jrv,
       ),
     );
 
-    // Si no existe la junta receptora de votos, no se puede eliminar
+    // Si no existe la junta receptora de votos, no se puede crear
     if (!juntaReceptoraVotos) {
       throw new HttpException(
         'Junta Receptora de Votos no encontrado',
@@ -241,10 +240,11 @@ export class JuntaReceptoraVotosController {
       );
     }
 
+    //Cuantos miembros posee la mesa
     const countMembersJRV = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.GET_MEMBERS_BY_JRV,
-        id_jrv,
+        miembroData.id_jrv,
       ),
     );
 
@@ -255,32 +255,16 @@ export class JuntaReceptoraVotosController {
       );
     }
 
-    const memberExist = await lastValueFrom(
-      this._clientProxyJuntaReceptoraVotos.send(
-        JuntaReceptoraVotosMSG.GET_MEMBERS_BY_ID_PERSONA_NATURAL,
-        { id_jrv, id_persona_natural },
+    //Si el miembro ya existe
+    const usuarioExist = await lastValueFrom(
+      this._clientProxyUsuario.send(
+        UsuariosMSG.FIND_ONE,
+        miembroData.id_usuario,
       ),
     );
 
-    if (memberExist != undefined) {
-      throw new HttpException(
-        'Junta Receptora de Votos ya posee ese usuario',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const naturalPersonExist = await lastValueFrom(
-      this._clientProxyPersonaNatural.send(
-        PersonaNaturalMSG.FIND_ONE,
-        id_persona_natural,
-      ),
-    );
-
-    if (!naturalPersonExist) {
-      throw new HttpException(
-        'Persona natural no existe',
-        HttpStatus.NOT_FOUND,
-      );
+    if (!usuarioExist) {
+      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
     }
 
     return this._clientProxyJuntaReceptoraVotos.send(
@@ -294,14 +278,13 @@ export class JuntaReceptoraVotosController {
     @Body() miembroData: JrvMiembroDTO,
     @Param('id_jrv_miembro') id_jrv_miembro: string,
   ): Promise<Observable<IJrvMiembro>> {
-    const { id_jrv } = miembroData;
-
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
-        id_jrv,
+        miembroData.id_jrv,
       ),
     );
+
     if (!juntaReceptoraVotos) {
       throw new HttpException(
         'Junta Receptora de Votos no encontrado',
@@ -309,16 +292,57 @@ export class JuntaReceptoraVotosController {
       );
     }
 
+    //Si el miembro ya existe
+    const usuarioExist = await lastValueFrom(
+      this._clientProxyUsuario.send(
+        UsuariosMSG.FIND_ONE,
+        miembroData.id_usuario,
+      ),
+    );
+
+    if (!usuarioExist) {
+      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+    }
+
+    //Si el miembro ya existe
+    const miembroExist = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID,
+        {
+          id_jrv: miembroData.id_jrv,
+          id_jrv_miembro: parseInt(id_jrv_miembro),
+        },
+      ),
+    );
+
+    if (!miembroExist) {
+      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+    }
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.UPDATE_MEMBER,
-      { id_jrv_miembro: parseInt(id_jrv_miembro), miembroData },
+      { id_jrv_miembro: parseInt(id_jrv_miembro), miembroData: miembroData },
     );
   }
 
-  @Delete('miembro/:id_jrv_miembro')
+  @Delete('miembro/:id_jrv/:id_jrv_miembro')
   async deleteMember(
     @Param('id_jrv_miembro') id_jrv_miembro: string,
+    @Param('id_jrv') id_jrv: string,
   ): Promise<Observable<IJrvMiembro>> {
+    const miembroExist = await lastValueFrom(
+      this._clientProxyJuntaReceptoraVotos.send(
+        JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID,
+        {
+          id_jrv: parseInt(id_jrv),
+          id_jrv_miembro: parseInt(id_jrv_miembro),
+        },
+      ),
+    );
+
+    if (!miembroExist) {
+      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+    }
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.DELETE_MEMBER,
       parseInt(id_jrv_miembro),
