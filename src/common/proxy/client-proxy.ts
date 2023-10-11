@@ -21,32 +21,61 @@ export class ClientProxyAppAdminitracion {
     });
   }
 
-   clientProxyCentrosVotacion(): ClientProxy {
+  clientProxyJuntaReceptoraVotos(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-      queue: RabbitMQ.CentrosVotacionQueue,
+        queue: RabbitMQ.JuntaReceptoraVotosQueue,
       },
     });
   }
-  
+
+  clientProxyCentrosVotacion(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.CentrosVotacionQueue,
+      },
+    });
+  }
+
+  clientProxyPersonaNatural(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.PersonaNaturalQueue,
+      },
+    });
+  }
+
   clientProxyCandidatosPoliticos(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.CandidatosPoliticosQueue
+        queue: RabbitMQ.CandidatosPoliticosQueue,
       },
     });
   }
-        
-  clientProxyJrv(): ClientProxy {
+
+  clientProxyUsuarios(): ClientProxy {
     return ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: this.config.get('AMQP_URL'),
-        queue: RabbitMQ.JrvQueue,
+        queue: RabbitMQ.UsuarioQueue,
+      },
+    });
+  }
+  clientProxyDestinoSufragio(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: this.config.get('AMQP_URL'),
+        queue: RabbitMQ.DestinoSufragioQueue,
       },
     });
   }
