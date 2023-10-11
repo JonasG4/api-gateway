@@ -13,7 +13,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, lastValueFrom } from 'rxjs';
-import { DestinoSufragioDTO, estadoVoto } from './DTO/destino-sufragio.dto';
+import { DestinoSufragioDTO } from './DTO/destino-sufragio.dto';
 import {
   DestinoSufragioMSG,
   JrvMiembrosMSG,
@@ -117,8 +117,7 @@ export class DestinoSufragioController {
         'Persona natural no encontrada',
         HttpStatus.NOT_FOUND,
       );
-        console.log(destinoSufragioDTO);
-        
+
     return this._clientProxyDestinoSufragio.send(DestinoSufragioMSG.UPDATE, {
       id: parseInt(id),
       destinoSufragioDTO,
@@ -167,13 +166,13 @@ export class DestinoSufragioController {
       DestinoSufragioMSG.SET_STATUS_VOTE,
       {
         id: parseInt(id),
-        id_usuario: parseInt(id_usuario)
+        id_usuario: parseInt(id_usuario),
       },
     );
   }
 
   @Get('dui/:dui')
-  findByDui(@Param('dui') dui : string): Observable<any[]> {
+  findByDui(@Param('dui') dui: string): Observable<any[]> {
     return this._clientProxyDestinoSufragio.send(
       DestinoSufragioMSG.FIND_BY_DUI,
       dui,
