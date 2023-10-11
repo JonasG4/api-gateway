@@ -4,7 +4,6 @@ import { UsuariosMSG } from 'src/common/constantes';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { lastValueFrom } from 'rxjs';
 import { UsuarioDTO } from 'src/usuarios/DTO/usuario.dto';
-import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,6 @@ export class AuthService {
   private _clientProxyUsuario = this.clientProxy.clientProxyUsuarios();
 
   async validateUser(username: string, password: string): Promise<any> {
-    ('desu');
     const user = await lastValueFrom(
       this._clientProxyUsuario.send(UsuariosMSG.VALIDATE_USER, {
         usuario: username,
@@ -34,10 +32,9 @@ export class AuthService {
       username: user.usuario,
       id: user.id_usuario,
       rol: user.Rol.nombre,
-      nombres: user.PersonaNatural.nombres,
-      apellidos: user.PersonaNatural.apellidos,
-      dui: user.PersonaNatural.dui,
-      genero: user.PersonaNatural.genero,
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      dui: user.dui,
     };
 
     return {

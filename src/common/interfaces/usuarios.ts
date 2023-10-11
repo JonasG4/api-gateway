@@ -1,7 +1,9 @@
 export interface IUsuario extends Document {
   usuario: string;
-  correo_electronico: string;
+  nombres: string;
+  apellidos: string;
   clave: string;
   id_rol: number;
+  dui: string;
   estado: boolean;
 }

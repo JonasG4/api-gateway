@@ -15,12 +15,20 @@ export class UsuarioDTO {
   usuario: string;
   @ApiProperty()
   @IsNotEmpty()
-  @IsEmail()
-  correo_electronico: string;
+  @IsString()
+  nombres: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   id_rol: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  apellidos: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  dui: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsStrongPassword()
