@@ -51,6 +51,7 @@ export class CentroVotacionController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Get()
   findAll(): Observable<ICentroVotacion[]> {
     return this._clientProxyCentroVotacion.send(
@@ -58,7 +59,8 @@ export class CentroVotacionController {
       '',
     );
   }
-
+  
+  @Roles(Role.Admin, Role.Root)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Observable<ICentroVotacion>> {
     const centroVotacion = await lastValueFrom(
@@ -124,7 +126,6 @@ export class CentroVotacionController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
   @Patch(':id/cambiar-estado')
   async changeStatus(
     @Param('id') id: string,
