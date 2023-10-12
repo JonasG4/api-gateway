@@ -63,4 +63,26 @@ create(
 
     return personaNatural;
   }
+
+  @Get('dui/:dui')
+  async findOneByDui(
+    @Param('dui') dui: string,
+  ): Promise<Observable<IPersonaNatural>> {
+    // Se verifica que exista la junta receptora de votos
+    const personaNaturalDui = await lastValueFrom(
+      this._clientProxyPersonaNatural.send(
+        PersonaNaturalMSG.FIND_BY_DUI,
+        dui,
+      ),
+    );
+    // Si no existe la junta receptora de votos, no se puede eliminar
+    if (!personaNaturalDui) {
+      throw new HttpException(
+        'Junta Receptora de Votos no encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return personaNaturalDui;
+  }
 }
