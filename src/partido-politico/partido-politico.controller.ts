@@ -31,7 +31,7 @@ export class PartidoPoliticoController {
   private _clientProxyPartidoPolitico =
     this.clientProxy.clientProxyPartidosPoliticos();
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Root)
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('logo'))
@@ -51,7 +51,7 @@ export class PartidoPoliticoController {
     });
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<IPartidoPolitico[]> {
     return this._clientProxyPartidoPolitico.send(
@@ -60,7 +60,7 @@ export class PartidoPoliticoController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -83,7 +83,7 @@ export class PartidoPoliticoController {
     return partidoPolitico;
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Root)
   @Put(':id')
   async update(
     @Body() partidoPoliticoDTO: PartidoPoliticoDTO,
@@ -110,7 +110,7 @@ export class PartidoPoliticoController {
     });
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Root)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Observable<any>> {
     // Se verifica que exista el partido politico
@@ -135,7 +135,7 @@ export class PartidoPoliticoController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Root)
   @Patch(':idPartidoPolitico/cambiar-logo')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

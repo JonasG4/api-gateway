@@ -77,7 +77,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<IJuntaReceptoraVotos[]> {
     return this._clientProxyJuntaReceptoraVotos.send(
@@ -86,7 +86,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -181,7 +181,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente)
   @Patch(':id_jrv/cambiar-estado')
   async changeStatus(
     @Param('id_jrv') id_jrv: string,
@@ -234,7 +234,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente)
+  @Roles(Role.Admin, Role.Root)
   @Get('miembros/todos')
   async getJrvMembers(): Promise<Observable<IJrvMiembro>>{
     console.log("MEMBERS");
@@ -245,7 +245,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario)
+  @Roles(Role.Admin, Role.Root, Role.Presidente)
   @Get('miembro/:id_jrv_miembro')
   async getMemberById(
     @Param('id_jrv_miembro') id_jrv_miembro: string,
@@ -266,7 +266,7 @@ export class JuntaReceptoraVotosController {
     return miembroExist;
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario)
+  @Roles(Role.Admin, Role.Root)
   @Post('miembro')
   async createMember(
     @Body() miembroData: JrvMiembroDTO,
@@ -336,7 +336,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente)
+  @Roles(Role.Admin, Role.Root)
   @Put('miembro/:id_jrv_miembro')
   async updateMember(
     @Body() miembroData: JrvMiembroDTO,
@@ -374,7 +374,7 @@ export class JuntaReceptoraVotosController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente)
+  @Roles(Role.Admin, Role.Root)
   @Delete('miembro/:id_jrv_miembro')
   async deleteMember(
     @Param('id_jrv_miembro') id_jrv_miembro: string,

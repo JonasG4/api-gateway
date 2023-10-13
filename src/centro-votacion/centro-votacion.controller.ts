@@ -27,7 +27,7 @@ export class CentroVotacionController {
     this.clientProxy.clientProxyCentrosVotacion();
   private _clientProxyJrv = this.clientProxy.clientProxyJuntaReceptoraVotos();
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Root)
   @Post()
   async create(
     @Body() centroVotacionDTO: CentroVotacionDTO,
@@ -51,7 +51,7 @@ export class CentroVotacionController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<ICentroVotacion[]> {
     return this._clientProxyCentroVotacion.send(
@@ -60,7 +60,7 @@ export class CentroVotacionController {
     );
   }
   
-  @Roles(Role.Admin, Role.Root)
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Observable<ICentroVotacion>> {
     const centroVotacion = await lastValueFrom(
@@ -126,6 +126,7 @@ export class CentroVotacionController {
     );
   }
 
+  @Roles(Role.Root)
   @Patch(':id/cambiar-estado')
   async changeStatus(
     @Param('id') id: string,

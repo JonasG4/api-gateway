@@ -30,6 +30,8 @@ import {
   PersonaNaturalMSG,
 } from 'src/common/constantes';
 import { Response } from 'express';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Candidato Politico')
 @Controller('api/v1/candidato-politico')
@@ -45,6 +47,7 @@ export class CandidatoPoliticoController {
   private _clientProxyPersonaNatural =
     this.clientProxy.clientProxyPersonaNatural();
 
+  @Roles(Role.Admin, Role.Root)
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('foto_candidato'))
@@ -101,6 +104,7 @@ export class CandidatoPoliticoController {
       });
   }
 
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<ICandidatoPolitico[]> {
     return this._clientProxyCandidatoPolitico.send(
@@ -109,6 +113,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -128,6 +133,7 @@ export class CandidatoPoliticoController {
     return candidatoPolitico;
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Put(':id')
   async update(
     @Body() candidatoPoliticoDTO: CandidatoPoliticoUpdateDTO,
@@ -184,6 +190,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Observable<any>> {
     const candidatoPolitico = await lastValueFrom(
@@ -206,6 +213,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Patch(':id/cambiar-foto')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
