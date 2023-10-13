@@ -16,6 +16,10 @@ export class AllExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
+    console.log('====================================');
+    console.log(exception);
+    console.log('====================================');
+
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -26,6 +30,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     this.logger.error(
       `Http Status: ${status} Error: ${JSON.stringify(message)}`,
     );
+
     response.status(status).json({
       time: new Date().toISOString(),
       path: request.url,

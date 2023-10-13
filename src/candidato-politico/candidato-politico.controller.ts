@@ -23,9 +23,15 @@ import {
 } from './DTO/candidato-politico.dto';
 import { fileValidators } from 'src/common/validators/file.validators';
 import { ICandidatoPolitico } from 'src/common/interfaces/candidato-politico';
-import { Observable, lastValueFrom } from 'rxjs';
-import { CandidatosPoliticosMSG } from 'src/common/constantes';
+import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
+import {
+  CandidatosPoliticosMSG,
+  PartidosPoliticosMSG,
+  PersonaNaturalMSG,
+} from 'src/common/constantes';
 import { Response } from 'express';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Candidato Politico')
 @Controller('api/v1/candidato-politico')
@@ -35,10 +41,17 @@ export class CandidatoPoliticoController {
   private _clientProxyCandidatoPolitico =
     this.clientProxy.clientProxyCandidatosPoliticos();
 
+  private _clientProxyPartidoPolitico =
+    this.clientProxy.clientProxyPartidosPoliticos();
+
+  private _clientProxyPersonaNatural =
+    this.clientProxy.clientProxyPersonaNatural();
+
+  @Roles(Role.Admin, Role.Root)
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('foto_candidato'))
-  create(
+  async create(
     @Body() candidatoPoliticoDTO: CandidatoPoliticoDTO,
     @UploadedFile(
       new ParseFilePipe({
@@ -48,7 +61,35 @@ export class CandidatoPoliticoController {
     )
     foto_candidato: Express.Multer.File,
     @Res() res: Response,
-  ): void {
+  ): Promise<void> {
+    const existPartidoPolitico = await firstValueFrom(
+      this._clientProxyPartidoPolitico.send(
+        PartidosPoliticosMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_partido_politico),
+      ),
+    );
+
+    const existPersonaNatural = await firstValueFrom(
+      this._clientProxyPersonaNatural.send(
+        PersonaNaturalMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_persona_natural),
+      ),
+    );
+
+    if (!existPartidoPolitico) {
+      throw new HttpException(
+        'Partido Politico no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!existPersonaNatural) {
+      throw new HttpException(
+        'Persona Natural no encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this._clientProxyCandidatoPolitico
       .send(CandidatosPoliticosMSG.CREATE, {
         candidatoPolitico: candidatoPoliticoDTO,
@@ -63,6 +104,7 @@ export class CandidatoPoliticoController {
       });
   }
 
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<ICandidatoPolitico[]> {
     return this._clientProxyCandidatoPolitico.send(
@@ -71,6 +113,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -90,6 +133,7 @@ export class CandidatoPoliticoController {
     return candidatoPolitico;
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Put(':id')
   async update(
     @Body() candidatoPoliticoDTO: CandidatoPoliticoUpdateDTO,
@@ -109,6 +153,34 @@ export class CandidatoPoliticoController {
       );
     }
 
+    const existPartidoPolitico = await firstValueFrom(
+      this._clientProxyPartidoPolitico.send(
+        PartidosPoliticosMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_partido_politico),
+      ),
+    );
+
+    const existPersonaNatural = await firstValueFrom(
+      this._clientProxyPersonaNatural.send(
+        PersonaNaturalMSG.FIND_ONE,
+        Number(candidatoPoliticoDTO.id_persona_natural),
+      ),
+    );
+
+    if (!existPartidoPolitico) {
+      throw new HttpException(
+        'Partido Politico no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!existPersonaNatural) {
+      throw new HttpException(
+        'Persona Natural no encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this._clientProxyCandidatoPolitico.send(
       CandidatosPoliticosMSG.UPDATE,
       {
@@ -118,6 +190,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Observable<any>> {
     const candidatoPolitico = await lastValueFrom(
@@ -140,6 +213,7 @@ export class CandidatoPoliticoController {
     );
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Patch(':id/cambiar-foto')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

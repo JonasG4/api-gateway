@@ -16,6 +16,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('Aplicación de administración')
     .setDescription('Aplicación de administración política')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 
@@ -24,6 +25,7 @@ async function bootstrap() {
   SwaggerModule.setup('/api/docs', app, document, {
     swaggerOptions: {
       filter: true,
+      
     },
   });
 

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -22,6 +23,7 @@ export class CentroVotacionDTO {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => parseInt(value))
   id_municipio: number;
   @ApiProperty()
   @IsNotEmpty()

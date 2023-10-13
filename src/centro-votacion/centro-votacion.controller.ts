@@ -16,8 +16,10 @@ import { CentroVotacionDTO, EstadoDTO } from './DTO/centro-votacion.dto';
 import { CentrosVotacionMSG } from 'src/common/constantes';
 import { ICentroVotacion } from 'src/common/interfaces/centro-votacion';
 import { Observable, lastValueFrom } from 'rxjs';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
-@ApiTags('centro-votacion')
+@ApiTags('Centro Votacion')
 @Controller('api/v1/centro-votacion')
 export class CentroVotacionController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
@@ -25,16 +27,31 @@ export class CentroVotacionController {
     this.clientProxy.clientProxyCentrosVotacion();
   private _clientProxyJrv = this.clientProxy.clientProxyJuntaReceptoraVotos();
 
+  @Roles(Role.Root)
   @Post()
-  create(
+  async create(
     @Body() centroVotacionDTO: CentroVotacionDTO,
-  ): Observable<ICentroVotacion> {
+  ): Promise<Observable<ICentroVotacion>> {
+    const centroNombreExiste = await lastValueFrom(
+      this._clientProxyCentroVotacion.send(
+        CentrosVotacionMSG.FIND_ONE_BY_NAME,
+        centroVotacionDTO.nombre,
+      ),
+    );
+
+    if (centroNombreExiste)
+      throw new HttpException(
+        'Centro de votación ya posee este nombre',
+        HttpStatus.NOT_FOUND,
+      );
+
     return this._clientProxyCentroVotacion.send(
       CentrosVotacionMSG.CREATE,
       centroVotacionDTO,
     );
   }
 
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<ICentroVotacion[]> {
     return this._clientProxyCentroVotacion.send(
@@ -42,12 +59,10 @@ export class CentroVotacionController {
       '',
     );
   }
-
+  
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Observable<ICentroVotacion>> {
-    (id);
-    (parseInt(id));
-
     const centroVotacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
         CentrosVotacionMSG.FIND_ONE,
@@ -64,6 +79,7 @@ export class CentroVotacionController {
     return centroVotacion;
   }
 
+  @Roles(Role.Admin, Role.Root)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -75,18 +91,20 @@ export class CentroVotacionController {
         parseInt(id),
       ),
     );
+
     if (!centroVotacion)
       throw new HttpException(
         'Centro de votación no encontrado',
         HttpStatus.NOT_FOUND,
       );
-
+    
     return this._clientProxyCentroVotacion.send(CentrosVotacionMSG.UPDATE, {
       id: parseInt(id),
       centroVotacionDTO,
     });
   }
 
+  @Roles(Role.Root)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Observable<any>> {
     const centroVotacion = await lastValueFrom(
@@ -95,21 +113,23 @@ export class CentroVotacionController {
         parseInt(id),
       ),
     );
+
     if (!centroVotacion)
       throw new HttpException(
         'Centro de votación no encontrado',
         HttpStatus.NOT_FOUND,
       );
+
     return this._clientProxyCentroVotacion.send(
       CentrosVotacionMSG.DELETE,
       parseInt(id),
     );
   }
 
+  @Roles(Role.Root)
   @Patch(':id/cambiar-estado')
   async changeStatus(
     @Param('id') id: string,
-    @Body('estado') estado: EstadoDTO,
   ): Promise<Observable<ICentroVotacion>> {
     const centroVotacion = await lastValueFrom(
       this._clientProxyCentroVotacion.send(
@@ -117,6 +137,7 @@ export class CentroVotacionController {
         parseInt(id),
       ),
     );
+    
     if (!centroVotacion)
       throw new HttpException(
         'Centro de votación no encontrado',
@@ -124,8 +145,7 @@ export class CentroVotacionController {
       );
 
     return this._clientProxyCentroVotacion.send(CentrosVotacionMSG.SET_STATUS, {
-      id: parseInt(id),
-      estado,
+      id: parseInt(id)
     });
   }
 }

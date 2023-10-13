@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { PersonaNaturalModule } from './persona-natural/persona-natural.module';
 import { DestinoSufragioModule } from './destino-sufragio/destino-sufragio.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -23,6 +25,12 @@ import { DestinoSufragioModule } from './destino-sufragio/destino-sufragio.modul
     UsuariosModule,
     PersonaNaturalModule,
     DestinoSufragioModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

@@ -13,7 +13,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, lastValueFrom } from 'rxjs';
-import { DestinoSufragioDTO, estadoVoto } from './DTO/destino-sufragio.dto';
+import { DestinoSufragioDTO } from './DTO/destino-sufragio.dto';
 import {
   DestinoSufragioMSG,
   JrvMiembrosMSG,
@@ -21,7 +21,7 @@ import {
 } from 'src/common/constantes';
 import { IDestinoSufragio } from 'src/common/interfaces/destino-sufragio';
 
-@ApiTags('destino-sufragio')
+@ApiTags('Destino Sufragio')
 @Controller('api/v1/destino-sufragio')
 export class DestinoSufragioController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
@@ -35,7 +35,7 @@ export class DestinoSufragioController {
   async create(
     @Body() destinoSufragioDTO: DestinoSufragioDTO,
   ): Promise<Observable<IDestinoSufragio>> {
-    const { id_jrv, id_personas_natural } = destinoSufragioDTO;
+    const { id_jrv, id_persona_natural } = destinoSufragioDTO;
 
     const jrv = await lastValueFrom(
       this._clientProxyJrv.send(JrvMiembrosMSG.FIND_ONE, id_jrv),
@@ -47,7 +47,7 @@ export class DestinoSufragioController {
     const personaNatural = await lastValueFrom(
       this._clientProxyPersonaNatural.send(
         PersonaNaturalMSG.FIND_ONE,
-        id_personas_natural,
+        id_persona_natural,
       ),
     );
 
@@ -55,6 +55,19 @@ export class DestinoSufragioController {
       throw new HttpException(
         'Persona natural no encontrada',
         HttpStatus.NOT_FOUND,
+      );
+
+    const existeEnJrv = await lastValueFrom(
+      this._clientProxyDestinoSufragio.send(
+        DestinoSufragioMSG.FIND_BY_PERSONA_NATURAL,
+        id_persona_natural,
+      ),
+    );
+
+    if (existeEnJrv)
+      throw new HttpException(
+        'Persona natural ya posee destino de sufragio',
+        HttpStatus.BAD_REQUEST,
       );
 
     return this._clientProxyDestinoSufragio.send(
@@ -90,39 +103,25 @@ export class DestinoSufragioController {
 
     return destinoSufragio;
   }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() destinoSufragioDTO: DestinoSufragioDTO,
-  ): Promise<Observable<IDestinoSufragio>> {
-    const { id_jrv, id_personas_natural } = destinoSufragioDTO;
-
-    const jrv = await lastValueFrom(
-      this._clientProxyJrv.send(JrvMiembrosMSG.FIND_ONE, id_jrv),
-    );
-
-    if (!jrv)
-      throw new HttpException('JRV no encontrado', HttpStatus.NOT_FOUND);
-
-    const personaNatural = await lastValueFrom(
+  
+  @Get('dui/:dui')
+  async findByDui(@Param('dui') dui: string): Promise<Observable<any[]>> {
+    const personaNaturalDui = await lastValueFrom(
       this._clientProxyPersonaNatural.send(
-        PersonaNaturalMSG.FIND_ONE,
-        id_personas_natural,
+        PersonaNaturalMSG.FIND_BY_DUI,
+        dui,
       ),
     );
 
-    if (!personaNatural)
+    if (!personaNaturalDui)
       throw new HttpException(
         'Persona natural no encontrada',
         HttpStatus.NOT_FOUND,
       );
-        console.log(destinoSufragioDTO);
-        
-    return this._clientProxyDestinoSufragio.send(DestinoSufragioMSG.UPDATE, {
-      id: parseInt(id),
-      destinoSufragioDTO,
-    });
+    return this._clientProxyDestinoSufragio.send(
+      DestinoSufragioMSG.FIND_BY_DUI,
+      dui,
+    );
   }
 
   @Delete(':id')
@@ -167,16 +166,9 @@ export class DestinoSufragioController {
       DestinoSufragioMSG.SET_STATUS_VOTE,
       {
         id: parseInt(id),
-        id_usuario: parseInt(id_usuario)
+        id_usuario: parseInt(id_usuario),
       },
     );
   }
 
-  @Get('dui/:dui')
-  findByDui(@Param('dui') dui : string): Observable<any[]> {
-    return this._clientProxyDestinoSufragio.send(
-      DestinoSufragioMSG.FIND_BY_DUI,
-      dui,
-    );
-  }
 }
