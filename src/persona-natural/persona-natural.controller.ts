@@ -27,7 +27,7 @@ export class PersonaNaturalController {
   private _clientProxyPersonaNatural =
     this.clientProxy.clientProxyPersonaNatural();
 
-  // @Roles(Role.Root, Role.Admin)
+  @Roles(Role.Root, Role.Admin)
   @Post()
   async create(
     @Body() personaNaturalDTO: PersonaNaturalDTO,
@@ -81,7 +81,7 @@ export class PersonaNaturalController {
   }
 
   @Get('dui/:dui')
-  async findById(@Param('dui') dui: string) {
+  async findByDui(@Param('dui') dui: string) {
     const persona_natural = await lastValueFrom(
       this._clientProxyPersonaNatural.send(PersonaNaturalMSG.FIND_BY_DUI, dui),
     );
@@ -92,6 +92,6 @@ export class PersonaNaturalController {
         HttpStatus.NOT_FOUND,
       );
 
-    return;
+    return persona_natural;
   }
 }

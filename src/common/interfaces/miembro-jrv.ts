@@ -1,6 +1,5 @@
 export interface IJrvMiembro extends Document {
   id_jrv: number;
-  id_persona_natural: number;
   id_usuario: number;
   estado?: Estado;
 }
