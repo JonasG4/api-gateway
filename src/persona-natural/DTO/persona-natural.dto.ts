@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 enum Genero {
   MASCULINO = 'MASCULINO',
@@ -24,6 +33,9 @@ export class PersonaNaturalDTO {
   @IsString()
   @MaxLength(150)
   apellidos: string;
+  @ApiProperty({
+    enum: Genero,
+  })
   @IsOptional()
   @IsEnum(Genero)
   genero: Genero;
@@ -45,4 +57,28 @@ export class PersonaNaturalDTO {
   @Type(() => Date)
   @IsDate()
   fecha_vencimiento_dui: Date;
+}
+
+export class PersonaNaturalFilter {
+  @ApiProperty({
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  municipio?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  departamento?: string;
+
+  @ApiProperty({
+    enum: Genero,
+    required: false,
+  })
+  @IsEnum(Genero)
+  @IsOptional()
+  genero?: Genero;
 }
