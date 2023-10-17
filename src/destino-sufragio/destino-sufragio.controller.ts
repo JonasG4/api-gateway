@@ -97,20 +97,17 @@ export class DestinoSufragioController {
 
     if (!destinoSufragio)
       throw new HttpException(
-        'Centro de votación no encontrado',
+        'Registro no encontrado',
         HttpStatus.NOT_FOUND,
       );
 
     return destinoSufragio;
   }
-  
+
   @Get('dui/:dui')
   async findByDui(@Param('dui') dui: string): Promise<Observable<any[]>> {
     const personaNaturalDui = await lastValueFrom(
-      this._clientProxyPersonaNatural.send(
-        PersonaNaturalMSG.FIND_BY_DUI,
-        dui,
-      ),
+      this._clientProxyPersonaNatural.send(PersonaNaturalMSG.FIND_BY_DUI, dui),
     );
 
     if (!personaNaturalDui)
@@ -118,10 +115,19 @@ export class DestinoSufragioController {
         'Persona natural no encontrada',
         HttpStatus.NOT_FOUND,
       );
-    return this._clientProxyDestinoSufragio.send(
+
+    const votante = await this._clientProxyDestinoSufragio.send(
       DestinoSufragioMSG.FIND_BY_DUI,
       dui,
     );
+
+    if (!votante)
+      throw new HttpException(
+        'Votante no encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+
+    return votante;
   }
 
   @Delete(':id')
@@ -135,7 +141,7 @@ export class DestinoSufragioController {
 
     if (!destinoSufragio)
       throw new HttpException(
-        'Centro de votación no encontrado',
+        'Registro no encontrado',
         HttpStatus.NOT_FOUND,
       );
     return this._clientProxyDestinoSufragio.send(
@@ -144,31 +150,58 @@ export class DestinoSufragioController {
     );
   }
 
-  @Patch(':id/asistencia/:id_usuario')
-  async changeStatus(
-    @Param('id') id: string,
-    @Param('id_usuario') id_usuario: string,
+  @Post('crear-qr/:dui')
+  async crearVoto(
+    @Param('dui') dui: string,
   ): Promise<Observable<IDestinoSufragio>> {
-    const destinoSufragio = await lastValueFrom(
+    const personaNaturalDui = await lastValueFrom(
+      this._clientProxyPersonaNatural.send(PersonaNaturalMSG.FIND_BY_DUI, dui),
+    );
+
+    if (!personaNaturalDui)
+      throw new HttpException(
+        'Persona natural no encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+
+    const votantePoseeJRV = await lastValueFrom(
       this._clientProxyDestinoSufragio.send(
-        DestinoSufragioMSG.FIND_ONE,
-        parseInt(id),
+        DestinoSufragioMSG.FIND_BY_PERSONA_NATURAL,
+        { id_persona_natural: personaNaturalDui.id_persona_natural },
       ),
     );
 
-    if (!destinoSufragio)
+    if (!votantePoseeJRV)
       throw new HttpException(
-        'Centro de votación no encontrado',
+        'Votante no posee lugar de votacion',
+        HttpStatus.NOT_FOUND,
+      );
+
+    if (votantePoseeJRV.jrv.estado == 'CERRADA')
+      throw new HttpException('JRV CERRADA!!', HttpStatus.NOT_FOUND);
+
+    if (votantePoseeJRV.jrv.centro_votacion.estado == 'CERRADA')
+      throw new HttpException(
+        'CENTRO DE VOTACION CERRADO!!',
+        HttpStatus.NOT_FOUND,
+      );
+
+    if (votantePoseeJRV.ledger_id != null || votantePoseeJRV.uuid_info != null)
+      throw new HttpException(
+        'Votante ya ingreso a centro de votacion!',
         HttpStatus.NOT_FOUND,
       );
 
     return this._clientProxyDestinoSufragio.send(
-      DestinoSufragioMSG.SET_STATUS_VOTE,
+      DestinoSufragioMSG.CREATE_VOTE,
       {
-        id: parseInt(id),
-        id_usuario: parseInt(id_usuario),
+        id_detalle_sufragio: votantePoseeJRV.id_detalle_sufragio,
+        genero: personaNaturalDui.genero,
+        departamento: personaNaturalDui.municipio.departamentos.nombre,
+        municipio: personaNaturalDui.municipio.nombre,
+        dui: dui,
+        codigo: votantePoseeJRV.jrv.codigo,
       },
     );
   }
-
 }

@@ -87,12 +87,23 @@ export class JuntaReceptoraVotosController {
   }
 
   @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
+  @Get('municipio/:id_municipio')
+  async findAllByMunicipio(
+    @Param('id_municipio') id_municipio: string,
+  ): Promise<Observable<IJuntaReceptoraVotos>> {
+    return this._clientProxyJuntaReceptoraVotos.send(
+      JuntaReceptoraVotosMSG.FIND_ALL_BY_MUNICIPIO,
+      { id_municipio: parseInt(id_municipio) },
+    );
+  }
+
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
   ): Promise<Observable<IJuntaReceptoraVotos>> {
     // Se verifica que exista la junta receptora de votos
-    
+
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
@@ -213,7 +224,6 @@ export class JuntaReceptoraVotosController {
   async getMembersByJRVId(
     @Param('id_jrv') id_jrv: string,
   ): Promise<Observable<IJrvMiembro>> {
-
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
@@ -236,9 +246,9 @@ export class JuntaReceptoraVotosController {
 
   @Roles(Role.Admin, Role.Root)
   @Get('miembros/todos')
-  async getJrvMembers(): Promise<Observable<IJrvMiembro>>{
-    console.log("MEMBERS");
-    
+  async getJrvMembers(): Promise<Observable<IJrvMiembro>> {
+    console.log('MEMBERS');
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.GET_MEMBERS,
       '',
@@ -293,6 +303,7 @@ export class JuntaReceptoraVotosController {
         miembroData.id_jrv,
       ),
     );
+
     let miembrosActivos = countMembersJRV.filter((miembro) => {
       miembro.estado == 'ACTIVO';
     });
@@ -319,7 +330,7 @@ export class JuntaReceptoraVotosController {
     const usuarioExistEnMesa = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.GET_MEMBER_BY_USER_ID,
-        miembroData.id_usuario,
+        { id_usuario: miembroData.id_usuario, id_jrv: miembroData.id_jrv },
       ),
     );
 
