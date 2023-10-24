@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, last, lastValueFrom } from 'rxjs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JuntaReceptoraVotosDTO } from './DTO/junta-receptora-votos.dto';
 import {
   CentrosVotacionMSG,
@@ -27,6 +27,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Junta Receptora Votos')
+@ApiBearerAuth()
 @Controller('api/v1/junta-receptora-votos')
 export class JuntaReceptoraVotosController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
@@ -210,6 +211,9 @@ export class JuntaReceptoraVotosController {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    console.log(id_jrv);
+    
 
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.SET_STATUS_JRV,
@@ -409,7 +413,7 @@ export class JuntaReceptoraVotosController {
   }
 
   @Roles(Role.Admin, Role.Root, Role.Presidente)
-  @Patch('miembro/:id_jrv_miembro')
+  @Patch('miembro/cambiar-estado/:id_jrv_miembro')
   async changeStatusJrvMember(
     @Param('id_jrv_miembro') id_jrv_miembro: string,
   ): Promise<Observable<IJrvMiembro>> {
@@ -427,7 +431,7 @@ export class JuntaReceptoraVotosController {
     }
 
     return this._clientProxyJuntaReceptoraVotos.send(
-      JuntaReceptoraVotosMSG.SET_STATUS_JRV,
+      JuntaReceptoraVotosMSG.SET_STATUS_JRV_MEMBER,
       {
         id_jrv_miembro: parseInt(id_jrv_miembro),
       },

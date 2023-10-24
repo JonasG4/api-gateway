@@ -15,7 +15,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import {
   CandidatoPoliticoDTO,
@@ -35,6 +35,7 @@ import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Candidato Politico')
 @Controller('api/v1/candidato-politico')
+@ApiBearerAuth()
 export class CandidatoPoliticoController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
 

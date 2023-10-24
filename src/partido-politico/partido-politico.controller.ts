@@ -18,7 +18,7 @@ import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { PartidoPoliticoDTO } from './DTO/partido-politico.dto';
 import { Observable, lastValueFrom } from 'rxjs';
 import { IPartidoPolitico } from 'src/common/interfaces/partido-politico';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileValidators } from 'src/common/validators/file.validators';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -26,6 +26,7 @@ import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Partido Politico')
 @Controller('api/v1/partido-politico')
+@ApiBearerAuth()
 export class PartidoPoliticoController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
   private _clientProxyPartidoPolitico =

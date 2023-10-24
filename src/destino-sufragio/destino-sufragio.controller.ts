@@ -10,7 +10,7 @@ import {
   HttpStatus,
   Param,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, lastValueFrom } from 'rxjs';
 import { DestinoSufragioDTO } from './DTO/destino-sufragio.dto';
@@ -24,6 +24,7 @@ import { IDestinoSufragio } from 'src/common/interfaces/destino-sufragio';
 
 @ApiTags('Destino Sufragio')
 @Controller('api/v1/destino-sufragio')
+@ApiBearerAuth()
 export class DestinoSufragioController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
   private _clientProxyDestinoSufragio =
@@ -116,11 +117,12 @@ export class DestinoSufragioController {
         HttpStatus.NOT_FOUND,
       );
 
-    const votante = await this._clientProxyDestinoSufragio.send(
+    const votante = await lastValueFrom(this._clientProxyDestinoSufragio.send(
       DestinoSufragioMSG.FIND_BY_DUI,
       dui,
-    );
-
+    ));
+      
+      
     if (!votante)
       throw new HttpException('Votante no encontrado', HttpStatus.NOT_FOUND);
 
@@ -242,7 +244,7 @@ export class DestinoSufragioController {
 
     if (votantePoseeJRV.ledger_id == null || votantePoseeJRV.uuid_info == null)
       throw new HttpException(
-        'Votante no valido, regresar a paso #1',
+        'Votante no valido',
         HttpStatus.NOT_FOUND,
       );
 
@@ -316,7 +318,7 @@ export class DestinoSufragioController {
 
     if (votantePoseeJRV.ledger_id == null || votantePoseeJRV.uuid_info == null)
       throw new HttpException(
-        'Votante no valido, regresar a paso #1',
+        'Votante no valido',
         HttpStatus.NOT_FOUND,
       );
 

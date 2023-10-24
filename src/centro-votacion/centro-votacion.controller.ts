@@ -10,7 +10,7 @@ import {
   HttpStatus,
   Param,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { CentroVotacionDTO, EstadoDTO } from './DTO/centro-votacion.dto';
 import { CentrosVotacionMSG } from 'src/common/constantes';
@@ -21,6 +21,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiTags('Centro Votacion')
 @Controller('api/v1/centro-votacion')
+@ApiBearerAuth()
 export class CentroVotacionController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
   private _clientProxyCentroVotacion =
