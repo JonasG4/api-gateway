@@ -6,6 +6,7 @@ export enum RabbitMQ {
   UsuarioQueue = 'usuarios',
   PersonaNaturalQueue = 'persona_natural',
   DestinoSufragioQueue = 'destino-sufragio',
+  SufragiosQueue = 'sufragios',
 }
 
 export const ROLES_KEY = 'roles';
@@ -94,5 +95,9 @@ export enum DestinoSufragioMSG {
   CREATE_VOTE = 'CREATE_VOTE',
   VALIDATE_VOTE = 'VALIDATE_VOTE',
   VERIFY_STATUS_VOTE = 'VERIFY_STATUS_VOTE',
-  CAST_VOTE = 'CAST_VOTE'
+  CAST_VOTE = 'CAST_VOTE',
+}
+
+export enum SufragiosMSG {
+  FIND_ALL = 'FIND_ALL_SUFRAGIOS',
 }

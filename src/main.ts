@@ -25,7 +25,6 @@ async function bootstrap() {
   SwaggerModule.setup('/api/docs', app, document, {
     swaggerOptions: {
       filter: true,
-      
     },
   });
 
