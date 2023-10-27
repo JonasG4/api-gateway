@@ -10,6 +10,7 @@ import { PersonaNaturalModule } from './persona-natural/persona-natural.module';
 import { DestinoSufragioModule } from './destino-sufragio/destino-sufragio.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { SufragioModule } from './sufragios/sufragio.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     UsuariosModule,
     PersonaNaturalModule,
     DestinoSufragioModule,
+    SufragioModule,
   ],
   providers: [
     {
