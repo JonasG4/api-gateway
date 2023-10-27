@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, lastValueFrom } from 'rxjs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PersonaNaturalMSG } from 'src/common/constantes';
 import { IPersonaNatural } from 'src/common/interfaces/persona-natural.js';
 import {
@@ -21,6 +21,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('persona natural')
+@ApiBearerAuth()
 @Controller('api/v1/persona-natural')
 export class PersonaNaturalController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}

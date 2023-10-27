@@ -11,7 +11,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { UsuarioDTO, UsuarioUpdateDTO } from './DTO/usuario.dto';
 import { Observable, lastValueFrom } from 'rxjs';
@@ -24,6 +24,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 
 @ApiTags('Usuarios')
 @Controller('api/v1/usuarios')
+@ApiBearerAuth()
 export class UsuariosController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
   private _clientProxyUsuario = this.clientProxy.clientProxyUsuarios();

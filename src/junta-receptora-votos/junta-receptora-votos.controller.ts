@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 import { Observable, last, lastValueFrom } from 'rxjs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JuntaReceptoraVotosDTO } from './DTO/junta-receptora-votos.dto';
 import {
   CentrosVotacionMSG,
@@ -27,6 +27,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Junta Receptora Votos')
+@ApiBearerAuth()
 @Controller('api/v1/junta-receptora-votos')
 export class JuntaReceptoraVotosController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
@@ -87,12 +88,23 @@ export class JuntaReceptoraVotosController {
   }
 
   @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
+  @Get('municipio/:id_municipio')
+  async findAllByMunicipio(
+    @Param('id_municipio') id_municipio: string,
+  ): Promise<Observable<IJuntaReceptoraVotos>> {
+    return this._clientProxyJuntaReceptoraVotos.send(
+      JuntaReceptoraVotosMSG.FIND_ALL_BY_MUNICIPIO,
+      { id_municipio: parseInt(id_municipio) },
+    );
+  }
+
+  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
   ): Promise<Observable<IJuntaReceptoraVotos>> {
     // Se verifica que exista la junta receptora de votos
-    
+
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
@@ -200,6 +212,9 @@ export class JuntaReceptoraVotosController {
       );
     }
 
+    console.log(id_jrv);
+    
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.SET_STATUS_JRV,
       {
@@ -213,7 +228,6 @@ export class JuntaReceptoraVotosController {
   async getMembersByJRVId(
     @Param('id_jrv') id_jrv: string,
   ): Promise<Observable<IJrvMiembro>> {
-
     const juntaReceptoraVotos = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.FIND_ONE,
@@ -236,9 +250,9 @@ export class JuntaReceptoraVotosController {
 
   @Roles(Role.Admin, Role.Root)
   @Get('miembros/todos')
-  async getJrvMembers(): Promise<Observable<IJrvMiembro>>{
-    console.log("MEMBERS");
-    
+  async getJrvMembers(): Promise<Observable<IJrvMiembro>> {
+    console.log('MEMBERS');
+
     return this._clientProxyJuntaReceptoraVotos.send(
       JuntaReceptoraVotosMSG.GET_MEMBERS,
       '',
@@ -293,6 +307,7 @@ export class JuntaReceptoraVotosController {
         miembroData.id_jrv,
       ),
     );
+
     let miembrosActivos = countMembersJRV.filter((miembro) => {
       miembro.estado == 'ACTIVO';
     });
@@ -319,7 +334,7 @@ export class JuntaReceptoraVotosController {
     const usuarioExistEnMesa = await lastValueFrom(
       this._clientProxyJuntaReceptoraVotos.send(
         JuntaReceptoraVotosMSG.GET_MEMBER_BY_USER_ID,
-        miembroData.id_usuario,
+        { id_usuario: miembroData.id_usuario, id_jrv: miembroData.id_jrv },
       ),
     );
 
@@ -398,7 +413,7 @@ export class JuntaReceptoraVotosController {
   }
 
   @Roles(Role.Admin, Role.Root, Role.Presidente)
-  @Patch('miembro/:id_jrv_miembro')
+  @Patch('miembro/cambiar-estado/:id_jrv_miembro')
   async changeStatusJrvMember(
     @Param('id_jrv_miembro') id_jrv_miembro: string,
   ): Promise<Observable<IJrvMiembro>> {
@@ -416,7 +431,7 @@ export class JuntaReceptoraVotosController {
     }
 
     return this._clientProxyJuntaReceptoraVotos.send(
-      JuntaReceptoraVotosMSG.SET_STATUS_JRV,
+      JuntaReceptoraVotosMSG.SET_STATUS_JRV_MEMBER,
       {
         id_jrv_miembro: parseInt(id_jrv_miembro),
       },

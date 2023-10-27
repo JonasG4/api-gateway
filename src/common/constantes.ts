@@ -6,6 +6,7 @@ export enum RabbitMQ {
   UsuarioQueue = 'usuarios',
   PersonaNaturalQueue = 'persona_natural',
   DestinoSufragioQueue = 'destino-sufragio',
+  SufragiosQueue = 'sufragios',
 }
 
 export const ROLES_KEY = 'roles';
@@ -24,6 +25,7 @@ export enum JuntaReceptoraVotosMSG {
   UPDATE = 'UPDATE_JUNTA_RECEPTORA_VOTOS',
   DELETE = 'DELETE_JUNTA_RECEPTORA_VOTOS',
   FIND_ALL = 'FIND_JUNTAS_RECEPTORA_VOTOS',
+  FIND_ALL_BY_MUNICIPIO = 'FIND_ALL_BY_MUNICIPIO',
   FIND_ONE = 'FIND_JUNTA_RECEPTORA_VOTOS',
   FIND_ONE_BY_CODE = 'FIND_JUNTA_RECEPTORA_VOTOS_BY_CODE',
   SET_STATUS_JRV = 'SET_STATUS_JRV',
@@ -85,11 +87,17 @@ export enum PersonaNaturalMSG {
 
 export enum DestinoSufragioMSG {
   CREATE = 'CREATE_DESTINO_SUFRAGIO',
-  UPDATE = 'UPDATE_DESTINO_SUFRAGIO',
   DELETE = 'DELETE_DESTINO_SUFRAGIO',
   FIND_ALL = 'FIND_DESTINOS_SUFRAGIO',
   FIND_ONE = 'FIND_DESTINO_SUFRAGIO',
-  SET_STATUS_VOTE = 'SET_STATUS_VOTE',
   FIND_BY_PERSONA_NATURAL = 'FIND_BY_PERSONA_NATURAL',
   FIND_BY_DUI = 'FIND_BY_DUI',
+  CREATE_VOTE = 'CREATE_VOTE',
+  VALIDATE_VOTE = 'VALIDATE_VOTE',
+  VERIFY_STATUS_VOTE = 'VERIFY_STATUS_VOTE',
+  CAST_VOTE = 'CAST_VOTE',
+}
+
+export enum SufragiosMSG {
+  FIND_ALL = 'FIND_ALL_SUFRAGIOS',
 }
