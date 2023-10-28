@@ -7,7 +7,7 @@ import { ClientProxyAppAdminitracion } from 'src/common/proxy/client-proxy';
 @Controller('api/v1/sufragios')
 export class SufragioController {
   constructor(private readonly clientProxy: ClientProxyAppAdminitracion) {}
-  private _clientProxySufragio = this.clientProxy.clientProxySugragios();
+  private _clientProxySufragio = this.clientProxy.clientProxyDestinoSufragio();
 
   @Get()
   findAll(): Observable<ISufragio[]> {
