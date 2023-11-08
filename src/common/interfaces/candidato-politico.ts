@@ -8,4 +8,5 @@ export interface ICandidatoPolitico {
   estado?: Estado;
   id_partido_politico: number;
   id_persona_natural: number;
+  rol: string;
 }

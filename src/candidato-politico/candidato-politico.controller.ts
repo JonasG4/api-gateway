@@ -105,7 +105,6 @@ export class CandidatoPoliticoController {
       });
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get()
   findAll(): Observable<ICandidatoPolitico[]> {
     return this._clientProxyCandidatoPolitico.send(
@@ -114,7 +113,6 @@ export class CandidatoPoliticoController {
     );
   }
 
-  @Roles(Role.Admin, Role.Root, Role.Presidente, Role.Secretario, Role.Vocal)
   @Get(':id')
   async findOne(
     @Param('id') id: string,

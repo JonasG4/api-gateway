@@ -74,7 +74,7 @@ export class UsuariosController {
 
     if (!user)
       throw new HttpException('El usuario no existe', HttpStatus.NOT_FOUND);
-
+      
     return this._clientProxyUsuario.send(UsuariosMSG.UPDATE, {
       id_usuario: parseInt(id),
       data: usuarioDTO,
