@@ -117,12 +117,13 @@ export class DestinoSufragioController {
         HttpStatus.NOT_FOUND,
       );
 
-    const votante = await lastValueFrom(this._clientProxyDestinoSufragio.send(
-      DestinoSufragioMSG.FIND_BY_DUI,
-      dui,
-    ));
-      
-      
+    const votante = await lastValueFrom(
+      this._clientProxyDestinoSufragio.send(
+        DestinoSufragioMSG.FIND_BY_DUI,
+        dui,
+      ),
+    );
+
     if (!votante)
       throw new HttpException('Votante no encontrado', HttpStatus.NOT_FOUND);
 
@@ -192,14 +193,15 @@ export class DestinoSufragioController {
         'Votante ya ingreso a centro de votacion!',
         HttpStatus.NOT_FOUND,
       );
-
+    let generoPersona = personaNaturalDui.genero == 'MASCULINO' ? 'M' : 'F'
     return this._clientProxyDestinoSufragio.send(
       DestinoSufragioMSG.CREATE_VOTE,
       {
         id_detalle_sufragio: votantePoseeJRV.id_detalle_sufragio,
-        genero: personaNaturalDui.genero,
-        departamento: personaNaturalDui.municipio.departamentos.nombre,
-        municipio: personaNaturalDui.municipio.nombre,
+        genero: generoPersona,
+        departamento:
+          votantePoseeJRV.jrv.centro_votacion.municipios.id_departamento,
+        municipio: votantePoseeJRV.jrv.centro_votacion.id_municipio,
         dui: dui,
         codigo: votantePoseeJRV.jrv.codigo,
       },
@@ -243,10 +245,7 @@ export class DestinoSufragioController {
       );
 
     if (votantePoseeJRV.ledger_id == null || votantePoseeJRV.uuid_info == null)
-      throw new HttpException(
-        'Votante no valido',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Votante no valido', HttpStatus.NOT_FOUND);
 
     const verificarEstadoVoto = await lastValueFrom(
       this._clientProxyDestinoSufragio.send(
@@ -283,7 +282,6 @@ export class DestinoSufragioController {
     @Param('dui') dui: string,
     @Param('candidato_id') candidato_id: string,
   ): Promise<Observable<IDestinoSufragio>> {
-    
     const personaNaturalDui = await lastValueFrom(
       this._clientProxyPersonaNatural.send(PersonaNaturalMSG.FIND_BY_DUI, dui),
     );
@@ -317,17 +315,15 @@ export class DestinoSufragioController {
       );
 
     if (votantePoseeJRV.ledger_id == null || votantePoseeJRV.uuid_info == null)
-      throw new HttpException(
-        'Votante no valido',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Votante no valido', HttpStatus.NOT_FOUND);
 
     const candidatoSeleccinado = await lastValueFrom(
-      this._clientProxyCandidatos.send(CandidatosPoliticosMSG.FIND_ONE, 
+      this._clientProxyCandidatos.send(
+        CandidatosPoliticosMSG.FIND_ONE,
         parseInt(candidato_id),
       ),
     );
-    
+
     if (!candidatoSeleccinado)
       throw new HttpException(
         'No existe candidato seleccionado',
